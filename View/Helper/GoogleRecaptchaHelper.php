@@ -1,10 +1,22 @@
 <?php
-App::import('Vendor', 'GoogleRecaptcha.GoogleReCAPTCHA', array('file' => 'GoogleReCAPTCHA' . DS . 'recaptchalib.php'));
-
 class GoogleRecaptchaHelper extends Helper {
 
+	public $apiScriptUrl = 'https://www.google.com/recaptcha/api.js';
+
+	public $helpers = array('Html');
+
 	public function getRecaptcha() {
-		$publicKey = Configure::read('GoogleRecaptcha.publicKey');
-		return recaptcha_get_html($publicKey);
+		
+		// include script in head
+		$this->Html->script($this->apiScriptUrl, array('inline' => false));
+
+		// retrieve the site key from config
+		$siteKey = Configure::read('GoogleRecaptcha.siteKey');
+
+		// create the div element
+		return $this->Html->div('g-recaptcha',
+			'', array(
+				'data-sitekey' => $siteKey
+				));
 	}
 }
